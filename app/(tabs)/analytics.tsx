@@ -108,7 +108,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subValue, color
   </View>
 );
 
-const Analytics = ({ selectedPeriod, userId }: AnalyticsProps) => {
+const Analytics = ({ selectedPeriod, userId, startDate, endDate }: AnalyticsProps) => {
   const [workHours, setWorkHours] = useState<number | null>(null);
   const [averageWorkHours, setAverageWorkHours] = useState<number | null>(null);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
@@ -118,7 +118,7 @@ const Analytics = ({ selectedPeriod, userId }: AnalyticsProps) => {
   useEffect(() => {
     const loadAnalyticsData = async () => {
       if (!userId) return;
-      
+
       setIsLoading(true);
       setAnalyticsError(null);
       setWorkHours(null);
@@ -126,58 +126,60 @@ const Analytics = ({ selectedPeriod, userId }: AnalyticsProps) => {
       setHasData(false);
 
       try {
-        const today = new Date();
-        let startDate = new Date();
-        let endDate = new Date(today);
+        let start = startDate || new Date();
+        let end = endDate || new Date();
 
-        switch (selectedPeriod) {
-          case 'Last Week':
-            startDate.setDate(today.getDate() - 7);
-            break;
-          case 'Last Month':
-            // Get first and last day of previous month
-            startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-            endDate = new Date(today.getFullYear(), today.getMonth(), 0);
-            break;
-          case 'Last Year':
-            // Get first and last day of previous year
-            startDate = new Date(today.getFullYear() - 1, 0, 1);
-            endDate = new Date(today.getFullYear() - 1, 11, 31);
-            break;
-          // default:
-          //   startDate.setDate(today.getDate() - 7);
+        if (!startDate || !endDate) {
+          const today = new Date();
+          start = new Date();
+          end = new Date(today);
+
+          switch (selectedPeriod) {
+            case 'Last Week':
+              start.setDate(today.getDate() - 7);
+              break;
+            case 'Last Month':
+              start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+              end = new Date(today.getFullYear(), today.getMonth(), 0);
+              break;
+            case 'Last Year':
+              start = new Date(today.getFullYear() - 1, 0, 1);
+              end = new Date(today.getFullYear() - 1, 11, 31);
+              break;
+          }
         }
 
         const data = await fetchAttendanceData(
           userId,
-          format(startDate, 'yyyy-MM-dd'),
-          format(endDate, 'yyyy-MM-dd')
+          format(start, 'yyyy-MM-dd'),
+          format(end, 'yyyy-MM-dd')
         );
 
         // Check if we have valid hours data
-        const hasValidHours = data.data?.hours && 
-        (data.data.hours.total !== null && 
-         data.data.hours.total !== undefined && 
-         data.data.hours.daily_average !== null && 
-         data.data.hours.daily_average !== undefined);
+        const hasValidHours = data.data?.hours &&
+          (data.data.hours.total !== null &&
+            data.data.hours.total !== undefined &&
+            data.data.hours.daily_average !== null &&
+            data.data.hours.daily_average !== undefined);
 
-          if (!hasValidHours) {
+        if (!hasValidHours) {
           throw new Error('No work hours data available for selected period');
-          }
+        }
 
-          setWorkHours(data.data.hours.total);
-          setAverageWorkHours(data.data.hours.daily_average);
-          setHasData(true);
-          } catch (error) {
-          console.error('Error loading analytics data:', error);
-          setAnalyticsError('No work hours data available');
-          setHasData(false);
-          } finally {
-          setIsLoading(false);
-          }
-          };
+        setWorkHours(data.data.hours.total);
+        setAverageWorkHours(data.data.hours.daily_average);
+        setHasData(true);
+      } catch (error) {
+        console.error('Error loading analytics data:', error);
+        setAnalyticsError('No work hours data available');
+        setHasData(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     loadAnalyticsData();
-  }, [selectedPeriod, userId]);
+  }, [selectedPeriod, userId, startDate, endDate]);
 
   if (isLoading) {
     return (
@@ -332,6 +334,10 @@ export default function StatsScreen() {
         attendanceRate: `${data.data.attendance.rate}%`,
         trend: data.data.attendance.trend || '+0%',
       });
+  
+      // Pass the custom date range to the Analytics component
+      setStartDate(startDate);
+      setEndDate(endDate);
     } catch (err) {
       console.error('Load data error:', {
         error: err,
@@ -554,7 +560,7 @@ export default function StatsScreen() {
         </View>
 
         <Text style={styles.sectionTitle}>Work Hours</Text>
-        <Analytics selectedPeriod={selectedPeriod} userId={userId} />
+        <Analytics selectedPeriod={selectedPeriod} userId={userId} startDate={startDate} endDate={endDate} />
       </ScrollView>
     </ErrorBoundary>
   );

@@ -746,7 +746,7 @@ const styles = StyleSheet.create({
     color: '#6b7280',
   },
   nameText: {
-    fontSize: 24,
+    fontSize: 21,
     fontWeight: 'bold',
     color: '#111827',
     marginTop: 4,

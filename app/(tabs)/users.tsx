@@ -33,6 +33,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 
+
 interface RoleData {
   role_id: number;
   role_name: string;
@@ -409,15 +410,18 @@ export default function UsersScreen() {
         throw new Error('Failed to fetch profile image');
       }
       const data = await response.json();
-      if (data.u_pro_img) {
+      if (data.u_pro_img && data.u_pro_img !== "") {
         setEditedUser({ ...user, u_pro_img: data.u_pro_img });
       } else {
+        // Set to null if response is null or empty string
         setEditedUser({ ...user, u_pro_img: null });
       }
     } catch (error) {
       console.error('Error fetching profile image:', error);
+      // Set to null in case of error
       setEditedUser({ ...user, u_pro_img: null });
-    } finally {
+    }
+     finally {
       setProfileImageLoading(false);
       setShowUserProfile(true);
     }
