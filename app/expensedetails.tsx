@@ -140,7 +140,7 @@ export default function MyExpenses() {
               {getStatusIcon(expense.expense_status)}
             </View>
             <Text style={styles.expenseType}>Type: {expense.expense_type}</Text>
-            <Text style={styles.expenseAmount}>Amount: ${expense.expense_amount}</Text>
+            <Text style={styles.expenseAmount}>Amount: ₹{expense.expense_amount}</Text>
             <Text style={styles.expenseDate}>Date: {expense.expense_date}</Text>
             <Text style={styles.expenseComment}>Comment: {expense.expense_comment}</Text>
           </View>
