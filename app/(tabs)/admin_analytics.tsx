@@ -459,7 +459,7 @@ const UserAnalytics = () => {
           <VictoryChart
             theme={VictoryTheme.material}
             height={300}
-            padding={{ top: 50, bottom: 50, left: 60, right: 40 }}
+            padding={{ top: 50, bottom: 50, left: 60, right: 80 }}
             // containerComponent={
             //   <VictoryZoomVoronoiContainer
             //     labels={({ datum }) =>
@@ -522,7 +522,7 @@ const UserAnalytics = () => {
             theme={VictoryTheme.material}
             domainPadding={20}
             height={300}
-            padding={{ top: 50, bottom: 60, left: 60, right: 40 }}
+            padding={{ top: 50, bottom: 60, left: 60, right: 80 }}
             containerComponent={
               <VictoryVoronoiContainer
                 labels={({ datum }) =>
