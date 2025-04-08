@@ -1,6 +1,6 @@
 # Geomaticx Software Solution
 
-![Geomaticx Software](https://i.postimg.cc/02RyntMv/Untitled-design-1.png)
+
 
 ## 🚀 Overview
 **Geomaticx Software Solution** is a powerful geospatial data management system designed to efficiently track, map, and visualize location data. It runs in the background, collecting real-time location updates and displaying traveled routes on an interactive map.
