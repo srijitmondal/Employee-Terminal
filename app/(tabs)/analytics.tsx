@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Button, Modal, TouchableOpacity, View, Text, StyleSheet, ScrollView, Pressable, ViewStyle, Dimensions } from 'react-native';
+import { Button, Modal, TouchableOpacity, View, Text, StyleSheet, ScrollView, Pressable, ViewStyle, Dimensions, FlatList } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import { Calendar, Clock as ClockIcon, Timer, UserCheck, UserX, TrendingUp } from 'lucide-react-native';
 import { format } from 'date-fns';
@@ -391,6 +391,23 @@ export default function StatsScreen() {
     setCalendarVisible(false);
   };
 
+  const resetSelections = () => {
+    setSelectedPeriod('Last Week');
+    setStartDate(null);
+    setEndDate(null);
+    setValue('Last Week');
+    setStats({
+      totalDays: 0,
+      presentDays: 0,
+      absentDays: 0,
+      averageCheckIn: '--:--',
+      averageCheckOut: '--:--',
+      attendanceRate: '0%',
+      trend: '+0%',
+    });
+    setError(null);
+  };
+
   if (isLoadingUser) {
     return <ActivityIndicator />;
   }
@@ -400,168 +417,179 @@ export default function StatsScreen() {
       FallbackComponent={ErrorFallback}
       onError={(error, info) => console.error('Error caught:', error, info)}
     >
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>User Overview</Text>
+      <FlatList
+        data={[{ key: 'content' }]} // Dummy data to render the content
+        renderItem={() => (
+          <View style={styles.content}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.title}>User Overview</Text>
+              <TouchableOpacity style={styles.resetButton} onPress={resetSelections}>
+                <Text style={styles.resetButtonText}>Reset</Text>
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.filterContainer}>
-          <View style={styles.dropdownContainer}>
-            <DropDownPicker
-              zIndex={1000}
-              open={open}
-              value={value}
-              items={items}
-              setOpen={setOpen}
-              setValue={setValue}
-              setItems={setItems}
-              placeholder="Last Week"
-              style={styles.dropdown}
-              dropDownContainerStyle={styles.dropdownList}
-              onChangeValue={(value) => {
-                if (value) setSelectedPeriod(value);
-              }}
-            />
-          </View>
-          <TouchableOpacity onPress={() => setCalendarVisible(true)}>
-            <Text style={styles.dateButtonText}>
-              {startDate && endDate
-              ? `${format(startDate, 'MM.dd.yyyy')} - ${format(endDate, 'MM.dd.yyyy')}`
-              : startDate
-              ? `${format(startDate, 'MM.dd.yyyy')} - Select end date`
-              : 'Select date range'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <Modal
-          visible={isCalendarVisible}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setCalendarVisible(false)}
-        >
-          <Pressable style={styles.modalBackdrop} onPress={onBackdropPress}>
-            <View style={styles.calendarContent}>
-              <View style={styles.calendarModal} onStartShouldSetResponder={() => true}>
-              <View style={styles.selectionInfo}>
-          <Text style={styles.selectionText}>
-            {startDate && !endDate 
-              ? `Selected start: ${format(startDate, 'MMM dd, yyyy')}`
-              : startDate && endDate
-              ? `Selected range: ${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`
-              : 'Select start date'}
-          </Text>
-        </View>
-                <CalendarPicker
-                  startFromMonday={true}
-                  allowRangeSelection={true}
-                  onDateChange={handleDateSelect}
-                  selectedStartDate={startDate || undefined}
-                  selectedEndDate={endDate || undefined}
-                  width={300}
-                  height={350}
-                  minDate={new Date(2000, 0, 1)}
-                  maxDate={new Date()}
-                  scaleFactor={375}
-                  dayShape="square"
-                  selectedDayColor="#3b82f6"
-                  selectedDayTextColor="#ffffff"
-                  todayBackgroundColor="#e6ffe6"
-                  selectedDayStyle={{
-                    borderRadius: 4,
-                    height: 36,
-                    width: 36,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  selectedRangeStartStyle={{
-                    borderRadius: 4,
-                    height: 36,
-                    width: 36,
-                  }}
-                  selectedRangeEndStyle={{
-                    borderRadius: 4,
-                    height: 36,
-                    width: 36,
-                  }}
-                  selectedRangeStyle={{
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 0,
+            <View style={styles.filterContainer}>
+              <View style={styles.dropdownContainer}>
+                <DropDownPicker
+                  zIndex={1000}
+                  open={open}
+                  value={value}
+                  items={items}
+                  setOpen={setOpen}
+                  setValue={setValue}
+                  setItems={setItems}
+                  placeholder="Last Week"
+                  style={styles.dropdown}
+                  dropDownContainerStyle={styles.dropdownList}
+                  onChangeValue={(value) => {
+                    if (value) setSelectedPeriod(value);
                   }}
                 />
-                <View style={styles.calendarButtons}>
-                  <TouchableOpacity
-                    style={[styles.calendarButton, styles.clearButton]}
-                    onPress={() => {
-                      if (startDate || endDate) {
-                        setStartDate(null);
-                        setEndDate(null);
-                      }
-                    }}>
-                    <Text style={styles.calendarButtonText}>Clear</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.calendarButton, styles.cancelButton]}
-                    onPress={() => {
-                      setStartDate(null);
-                      setEndDate(null);
-                      setCalendarVisible(false);
-                    }}
-                  >
-                    <Text style={styles.calendarButtonText}>Cancel</Text>
-                  </TouchableOpacity>
+              </View>
+              <TouchableOpacity onPress={() => setCalendarVisible(true)}>
+                <Text style={styles.dateButtonText}>
+                  {startDate && endDate
+                  ? `${format(startDate, 'MM.dd.yyyy')} - ${format(endDate, 'MM.dd.yyyy')}`
+                  : startDate
+                  ? `${format(startDate, 'MM.dd.yyyy')} - Select end date`
+                  : 'Select date range'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Modal
+              visible={isCalendarVisible}
+              transparent={true}
+              animationType="fade"
+              onRequestClose={() => setCalendarVisible(false)}
+            >
+              <Pressable style={styles.modalBackdrop} onPress={onBackdropPress}>
+                <View style={styles.calendarContent}>
+                  <View style={styles.calendarModal} onStartShouldSetResponder={() => true}>
+                  <View style={styles.selectionInfo}>
+              <Text style={styles.selectionText}>
+                {startDate && !endDate 
+                  ? `Selected start: ${format(startDate, 'MMM dd, yyyy')}`
+                  : startDate && endDate
+                  ? `Selected range: ${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`
+                  : 'Select start date'}
+              </Text>
+            </View>
+                    <CalendarPicker
+                      startFromMonday={true}
+                      allowRangeSelection={true}
+                      onDateChange={handleDateSelect}
+                      selectedStartDate={startDate || undefined}
+                      selectedEndDate={endDate || undefined}
+                      width={300}
+                      height={350}
+                      minDate={new Date(2000, 0, 1)}
+                      maxDate={new Date()}
+                      scaleFactor={375}
+                      dayShape="square"
+                      selectedDayColor="#3b82f6"
+                      selectedDayTextColor="#ffffff"
+                      todayBackgroundColor="#e6ffe6"
+                      selectedDayStyle={{
+                        borderRadius: 4,
+                        height: 36,
+                        width: 36,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      selectedRangeStartStyle={{
+                        borderRadius: 4,
+                        height: 36,
+                        width: 36,
+                      }}
+                      selectedRangeEndStyle={{
+                        borderRadius: 4,
+                        height: 36,
+                        width: 36,
+                      }}
+                      selectedRangeStyle={{
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 0,
+                      }}
+                    />
+                    <View style={styles.calendarButtons}>
+                      <TouchableOpacity
+                        style={[styles.calendarButton, styles.clearButton]}
+                        onPress={() => {
+                          if (startDate || endDate) {
+                            setStartDate(null);
+                            setEndDate(null);
+                          }
+                        }}>
+                        <Text style={styles.calendarButtonText}>Clear</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.calendarButton, styles.cancelButton]}
+                        onPress={() => {
+                          setStartDate(null);
+                          setEndDate(null);
+                          setCalendarVisible(false);
+                        }}
+                      >
+                        <Text style={styles.calendarButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                 </View>
+              </Pressable>
+            </Modal>
+
+            {error && <Text style={styles.errorText}>{error}</Text>}
+
+            <View style={styles.statsGrid}>
+              <StatCard
+                icon={<Calendar size={24} color="#0891b2" />}
+                title="Total Working Days"
+                value={stats.totalDays}
+                subValue={stats.trend}
+                color="#f0f9ff"
+              />
+              <StatCard
+                icon={<UserCheck size={24} color="#059669" />}
+                title="Present Days"
+                value={stats.presentDays}
+                subValue={null}
+                color="#f0fdf4"
+              />
+              <StatCard
+                icon={<UserX size={24} color="#dc2626" />}
+                title="Absent Days"
+                value={stats.absentDays}
+                subValue={null}
+                color="#fef2f2"
+              />
+              <StatCard
+                icon={<ClockIcon size={24} color="#0891b2" />}
+                title="Attendance Rate"
+                value={stats.attendanceRate}
+                subValue={null}
+                color="#f0f9ff"
+              />
+            </View>
+
+            <Text style={styles.sectionTitle}>Time Analysis</Text>
+            <View style={styles.timeStats}>
+              <View style={styles.timeCard}>
+                <Text style={styles.timeLabel}>Average Check-in</Text>
+                <Text style={styles.timeValue}>{stats.averageCheckIn}</Text>
+              </View>
+              <View style={styles.timeCard}>
+                <Text style={styles.timeLabel}>Average Check-out</Text>
+                <Text style={styles.timeValue}>{stats.averageCheckOut}</Text>
               </View>
             </View>
-          </Pressable>
-        </Modal>
 
-        {error && <Text style={styles.errorText}>{error}</Text>}
-
-        <View style={styles.statsGrid}>
-          <StatCard
-            icon={<Calendar size={24} color="#0891b2" />}
-            title="Total Working Days"
-            value={stats.totalDays}
-            subValue={stats.trend}
-            color="#f0f9ff"
-          />
-          <StatCard
-            icon={<UserCheck size={24} color="#059669" />}
-            title="Present Days"
-            value={stats.presentDays}
-            subValue={null}
-            color="#f0fdf4"
-          />
-          <StatCard
-            icon={<UserX size={24} color="#dc2626" />}
-            title="Absent Days"
-            value={stats.absentDays}
-            subValue={null}
-            color="#fef2f2"
-          />
-          <StatCard
-            icon={<ClockIcon size={24} color="#0891b2" />}
-            title="Attendance Rate"
-            value={stats.attendanceRate}
-            subValue={null}
-            color="#f0f9ff"
-          />
-        </View>
-
-        <Text style={styles.sectionTitle}>Time Analysis</Text>
-        <View style={styles.timeStats}>
-          <View style={styles.timeCard}>
-            <Text style={styles.timeLabel}>Average Check-in</Text>
-            <Text style={styles.timeValue}>{stats.averageCheckIn}</Text>
+            <Text style={styles.sectionTitle}>Work Hours</Text>
+            <Analytics selectedPeriod={selectedPeriod} userId={userId} startDate={startDate} endDate={endDate} />
           </View>
-          <View style={styles.timeCard}>
-            <Text style={styles.timeLabel}>Average Check-out</Text>
-            <Text style={styles.timeValue}>{stats.averageCheckOut}</Text>
-          </View>
-        </View>
-
-        <Text style={styles.sectionTitle}>Work Hours</Text>
-        <Analytics selectedPeriod={selectedPeriod} userId={userId} startDate={startDate} endDate={endDate} />
-      </ScrollView>
+        )}
+        keyExtractor={(item) => item.key}
+      />
     </ErrorBoundary>
   );
 }
@@ -831,5 +859,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#64748b',
     textAlign: 'center',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  resetButton: {
+    backgroundColor: '#3b82f6',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  resetButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
