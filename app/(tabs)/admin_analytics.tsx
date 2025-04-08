@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   TextInput,
   Modal,
   Pressable,
-} from 'react-native';
+} from "react-native";
 import {
   Users,
   UserCheck,
@@ -19,13 +19,13 @@ import {
   TrendingUp,
   TrendingDown,
   RefreshCw,
-} from 'lucide-react-native';
-import { BarChart, LineChart, PieChart } from 'react-native-chart-kit';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import CalendarPicker from 'react-native-calendar-picker';
-import { format } from 'date-fns';
-import { Platform } from 'react-native';
-import { useRouter } from 'expo-router';
+} from "lucide-react-native";
+import { BarChart, LineChart, PieChart } from "react-native-chart-kit";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import CalendarPicker from "react-native-calendar-picker";
+import { format } from "date-fns";
+import { Platform } from "react-native";
+import { useRouter } from "expo-router";
 import {
   VictoryChart,
   VictoryLine,
@@ -36,24 +36,24 @@ import {
   VictoryTooltip,
   VictoryZoomContainer,
   createContainer,
-} from 'victory-native';
+} from "victory-native";
 
-const VictoryZoomVoronoiContainer = createContainer('zoom', 'voronoi');
+const VictoryZoomVoronoiContainer = createContainer("zoom", "voronoi");
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 type DateRange = {
   startDate: Date;
   endDate: Date;
 };
 
-type RangeOption = 'today' | 'week' | 'month' | 'year';
+type RangeOption = "today" | "week" | "month" | "year";
 
 type UserAttendance = {
   id: number;
   name: string;
   role: string;
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
   daysPresent: number;
   daysAbsent: number;
   totalDays: number;
@@ -71,9 +71,9 @@ const UserAnalytics = () => {
   const router = useRouter();
   const [showAllActive, setShowAllActive] = useState(false);
   const [showAllInactive, setShowAllInactive] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [userRange, setUserRange] = useState<RangeOption>('today');
-  const [expenseRange, setExpenseRange] = useState<RangeOption>('today');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [userRange, setUserRange] = useState<RangeOption>("today");
+  const [expenseRange, setExpenseRange] = useState<RangeOption>("today");
   const [userDateRange, setUserDateRange] = useState<DateRange>({
     startDate: new Date(),
     endDate: new Date(),
@@ -108,13 +108,13 @@ const UserAnalytics = () => {
   });
 
   const fetchAnalyticsData = useCallback(
-    async (dataType: 'users' | 'expenses', dateRange: string) => {
+    async (dataType: "users" | "expenses", dateRange: string) => {
       try {
         const response = await fetch(
           `http://demo-expense.geomaticxevs.in/ET-api/admin_analytics.php?dataType=${dataType}&range=${dateRange}`
         );
         const data = await response.json();
-        if (dataType === 'users') {
+        if (dataType === "users") {
           setUserData(data);
         } else {
           setExpenseData(data);
@@ -129,16 +129,16 @@ const UserAnalytics = () => {
   useEffect(() => {
     const fetchData = () => {
       if (customDateRange.startDate && customDateRange.endDate) {
-        const startDate = format(customDateRange.startDate, 'yyyy-MM-dd');
-        const endDate = format(customDateRange.endDate, 'yyyy-MM-dd');
-        fetchAnalyticsData('users', `custom&start=${startDate}&end=${endDate}`);
+        const startDate = format(customDateRange.startDate, "yyyy-MM-dd");
+        const endDate = format(customDateRange.endDate, "yyyy-MM-dd");
+        fetchAnalyticsData("users", `custom&start=${startDate}&end=${endDate}`);
         fetchAnalyticsData(
-          'expenses',
+          "expenses",
           `custom&start=${startDate}&end=${endDate}`
         );
       } else {
-        fetchAnalyticsData('users', userRange);
-        fetchAnalyticsData('expenses', expenseRange);
+        fetchAnalyticsData("users", userRange);
+        fetchAnalyticsData("expenses", expenseRange);
       }
     };
 
@@ -150,26 +150,26 @@ const UserAnalytics = () => {
       setIsRefreshing(true);
 
       if (customDateRange.startDate && customDateRange.endDate) {
-        const startDate = format(customDateRange.startDate, 'yyyy-MM-dd');
-        const endDate = format(customDateRange.endDate, 'yyyy-MM-dd');
+        const startDate = format(customDateRange.startDate, "yyyy-MM-dd");
+        const endDate = format(customDateRange.endDate, "yyyy-MM-dd");
         await Promise.all([
           fetchAnalyticsData(
-            'users',
+            "users",
             `custom&start=${startDate}&end=${endDate}`
           ),
           fetchAnalyticsData(
-            'expenses',
+            "expenses",
             `custom&start=${startDate}&end=${endDate}`
           ),
         ]);
       } else {
         await Promise.all([
-          fetchAnalyticsData('users', userRange),
-          fetchAnalyticsData('expenses', expenseRange),
+          fetchAnalyticsData("users", userRange),
+          fetchAnalyticsData("expenses", expenseRange),
         ]);
       }
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error("Error refreshing data:", error);
     } finally {
       setIsRefreshing(false);
     }
@@ -177,17 +177,17 @@ const UserAnalytics = () => {
 
   const pieChartData = [
     {
-      name: 'Active Users',
+      name: "Active Users",
       population: userData.activeUsers,
-      color: '#7c3aed',
-      legendFontColor: '#64748b',
+      color: "#7c3aed",
+      legendFontColor: "#64748b",
       legendFontSize: 12,
     },
     {
-      name: 'Inactive Users',
+      name: "Inactive Users",
       population: userData.inactiveUsers,
-      color: '#c4b5fd',
-      legendFontColor: '#64748b',
+      color: "#c4b5fd",
+      legendFontColor: "#64748b",
       legendFontSize: 12,
     },
   ];
@@ -255,15 +255,15 @@ const UserAnalytics = () => {
   );
 
   const handleUserDownload = () => {
-    console.log('Downloading user analytics...');
+    console.log("Downloading user analytics...");
   };
 
   const handleUserViewDetails = () => {
-    router.push('/userattendance');
+    router.push("/userattendance");
   };
 
   const handleExpenseDownload = () => {
-    console.log('Downloading expense analytics...');
+    console.log("Downloading expense analytics...");
   };
 
   const handleExpenseViewDetails = () => {
@@ -271,7 +271,7 @@ const UserAnalytics = () => {
 
     if (customDateRange.startDate && customDateRange.endDate) {
       dateRangeToPass = {
-        type: 'custom',
+        type: "custom",
         startDate: customDateRange.startDate.toISOString(),
         endDate: customDateRange.endDate.toISOString(),
       };
@@ -284,7 +284,7 @@ const UserAnalytics = () => {
     }
 
     router.push({
-      pathname: '/allexpense',
+      pathname: "/allexpense",
       params: {
         dateRange: JSON.stringify(dateRangeToPass),
       },
@@ -298,11 +298,11 @@ const UserAnalytics = () => {
     >
       <Text style={styles.customDateButtonText}>
         {customDateRange.startDate && customDateRange.endDate
-          ? `${format(customDateRange.startDate, 'MMM dd, yyyy')} - ${format(
+          ? `${format(customDateRange.startDate, "MMM dd, yyyy")} - ${format(
               customDateRange.endDate,
-              'MMM dd, yyyy'
+              "MMM dd, yyyy"
             )}`
-          : 'Select Custom Date Range'}
+          : "Select Custom Date Range"}
       </Text>
     </TouchableOpacity>
   );
@@ -328,14 +328,14 @@ const UserAnalytics = () => {
                 {customDateRange.startDate && !customDateRange.endDate
                   ? `Selected start: ${format(
                       customDateRange.startDate,
-                      'MMM dd, yyyy'
+                      "MMM dd, yyyy"
                     )}`
                   : customDateRange.startDate && customDateRange.endDate
                   ? `Selected range: ${format(
                       customDateRange.startDate,
-                      'MMM dd'
-                    )} - ${format(customDateRange.endDate, 'MMM dd, yyyy')}`
-                  : 'Select start date'}
+                      "MMM dd"
+                    )} - ${format(customDateRange.endDate, "MMM dd, yyyy")}`
+                  : "Select start date"}
               </Text>
             </View>
 
@@ -377,7 +377,7 @@ const UserAnalytics = () => {
                   setCalendarVisible(false);
                 }}
               >
-                <Text style={[styles.calendarButtonText, { color: '#ffffff' }]}>
+                <Text style={[styles.calendarButtonText, { color: "#ffffff" }]}>
                   Cancel
                 </Text>
               </TouchableOpacity>
@@ -411,7 +411,7 @@ const UserAnalytics = () => {
         <Text style={styles.title}>Expense Analytics</Text>
 
         <View style={styles.rangeContainer}>
-          {(['today', 'week', 'month', 'year'] as RangeOption[]).map(
+          {(["today", "week", "month", "year"] as RangeOption[]).map(
             (range) => (
               <TouchableOpacity
                 key={range}
@@ -427,13 +427,13 @@ const UserAnalytics = () => {
                     expenseRange === range && styles.rangeButtonTextSelected,
                   ]}
                 >
-                  {range === 'today'
-                    ? 'Today'
-                    : range === 'week'
-                    ? 'Last Week'
-                    : range === 'month'
-                    ? 'Last Month'
-                    : 'Last Year'}
+                  {range === "today"
+                    ? "Today"
+                    : range === "week"
+                    ? "Last Week"
+                    : range === "month"
+                    ? "Last Month"
+                    : "Last Year"}
                 </Text>
               </TouchableOpacity>
             )
@@ -448,9 +448,9 @@ const UserAnalytics = () => {
             {customDateRange.startDate && customDateRange.endDate
               ? `${format(
                   customDateRange.startDate,
-                  'MMM dd, yyyy'
-                )} - ${format(customDateRange.endDate, 'MMM dd, yyyy')}`
-              : 'Select Custom Date Range'}
+                  "MMM dd, yyyy"
+                )} - ${format(customDateRange.endDate, "MMM dd, yyyy")}`
+              : "Select Custom Date Range"}
           </Text>
         </TouchableOpacity>
 
@@ -460,23 +460,28 @@ const UserAnalytics = () => {
             theme={VictoryTheme.material}
             height={300}
             padding={{ top: 50, bottom: 50, left: 60, right: 40 }}
-            containerComponent={
-              <VictoryZoomVoronoiContainer
-                zoomDimension="x"
-                labels={({ datum }: { datum: { x: string; y: number } }) =>
-                  `₹${datum.y.toLocaleString()}\n${datum.x}`
-                }
-                labelComponent={
-                  <VictoryTooltip
-                    flyoutStyle={{
-                      stroke: '#7c3aed',
-                      fill: 'white',
-                    }}
-                    style={{ fontSize: 12 }}
-                  />
-                }
-              />
-            }
+            // containerComponent={
+            //   <VictoryZoomVoronoiContainer
+            //     labels={({ datum }) =>
+            //       `₹${datum.y.toLocaleString()}\n${datum.x}`
+            //     }
+            //     labelComponent={
+            //       <VictoryTooltip
+            //         flyoutStyle={{
+            //           stroke: '#7c3aed',
+            //           fill: 'white',
+            //         }}
+            //         style={{ fontSize: 12 }}
+            //       />
+            //     }
+            //     zoomDimension="x"
+            //   />
+            // }
+            animate={{
+              duration: 2000,
+              onLoad: { duration: 1000 },
+              easing: "cubic",
+            }}
           >
             <VictoryAxis
               tickFormat={(t, i) => {
@@ -485,7 +490,7 @@ const UserAnalytics = () => {
               }}
               style={{
                 tickLabels: { fontSize: 10, padding: 5 },
-                grid: { stroke: '#e2e8f0' },
+                grid: { stroke: "#e2e8f0" },
               }}
             />
             <VictoryAxis
@@ -493,7 +498,7 @@ const UserAnalytics = () => {
               tickFormat={(t) => `₹${t / 1000}k`}
               style={{
                 tickLabels: { fontSize: 10, padding: 5 },
-                grid: { stroke: '#e2e8f0' },
+                grid: { stroke: "#e2e8f0" },
               }}
             />
             <VictoryLine
@@ -503,7 +508,7 @@ const UserAnalytics = () => {
               }))}
               style={{
                 data: {
-                  stroke: '#7c3aed',
+                  stroke: "#7c3aed",
                   strokeWidth: 3,
                 },
               }}
@@ -526,8 +531,8 @@ const UserAnalytics = () => {
                 labelComponent={
                   <VictoryTooltip
                     flyoutStyle={{
-                      stroke: '#7c3aed',
-                      fill: 'white',
+                      stroke: "#7c3aed",
+                      fill: "white",
                     }}
                     style={{ fontSize: 12 }}
                   />
@@ -537,7 +542,7 @@ const UserAnalytics = () => {
             animate={{
               duration: 2000,
               onLoad: { duration: 1000 },
-              easing: 'bounce',
+              easing: "bounce",
             }}
           >
             <VictoryAxis
@@ -549,10 +554,10 @@ const UserAnalytics = () => {
                 tickLabels: {
                   fontSize: 10,
                   angle: -45,
-                  textAnchor: 'end',
+                  textAnchor: "end",
                   padding: 5,
                 },
-                grid: { stroke: 'transparent' },
+                grid: { stroke: "transparent" },
               }}
             />
             <VictoryAxis
@@ -560,7 +565,7 @@ const UserAnalytics = () => {
               tickFormat={(t) => `₹${t / 1000}k`}
               style={{
                 tickLabels: { fontSize: 10, padding: 5 },
-                grid: { stroke: '#e2e8f0' },
+                grid: { stroke: "#e2e8f0" },
               }}
             />
             <VictoryBar
@@ -571,7 +576,7 @@ const UserAnalytics = () => {
               }))}
               style={{
                 data: {
-                  fill: '#7c3aed',
+                  fill: "#7c3aed",
                   width: 20,
                 },
               }}
@@ -588,13 +593,13 @@ const UserAnalytics = () => {
 
         <View style={styles.actionButtonsContainer}>
           <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: '#7c3aed' }]}
+            style={[styles.actionButton, { backgroundColor: "#7c3aed" }]}
             onPress={handleExpenseDownload}
           >
             <Text style={styles.actionButtonText}>Download</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: '#8b5cf6' }]}
+            style={[styles.actionButton, { backgroundColor: "#8b5cf6" }]}
             onPress={handleExpenseViewDetails}
           >
             <Text style={styles.actionButtonText}>View Details</Text>
@@ -633,14 +638,14 @@ const UserAnalytics = () => {
             <TouchableOpacity
               style={[
                 styles.rangeButton,
-                userRange === 'today' && styles.rangeButtonSelected,
+                userRange === "today" && styles.rangeButtonSelected,
               ]}
-              onPress={() => handleUserRangeChange('today')}
+              onPress={() => handleUserRangeChange("today")}
             >
               <Text
                 style={[
                   styles.rangeButtonText,
-                  userRange === 'today' && styles.rangeButtonTextSelected,
+                  userRange === "today" && styles.rangeButtonTextSelected,
                 ]}
               >
                 Today
@@ -649,14 +654,14 @@ const UserAnalytics = () => {
             <TouchableOpacity
               style={[
                 styles.rangeButton,
-                userRange === 'week' && styles.rangeButtonSelected,
+                userRange === "week" && styles.rangeButtonSelected,
               ]}
-              onPress={() => handleUserRangeChange('week')}
+              onPress={() => handleUserRangeChange("week")}
             >
               <Text
                 style={[
                   styles.rangeButtonText,
-                  userRange === 'week' && styles.rangeButtonTextSelected,
+                  userRange === "week" && styles.rangeButtonTextSelected,
                 ]}
               >
                 Week
@@ -665,14 +670,14 @@ const UserAnalytics = () => {
             <TouchableOpacity
               style={[
                 styles.rangeButton,
-                userRange === 'month' && styles.rangeButtonSelected,
+                userRange === "month" && styles.rangeButtonSelected,
               ]}
-              onPress={() => handleUserRangeChange('month')}
+              onPress={() => handleUserRangeChange("month")}
             >
               <Text
                 style={[
                   styles.rangeButtonText,
-                  userRange === 'month' && styles.rangeButtonTextSelected,
+                  userRange === "month" && styles.rangeButtonTextSelected,
                 ]}
               >
                 Month
@@ -681,14 +686,14 @@ const UserAnalytics = () => {
             <TouchableOpacity
               style={[
                 styles.rangeButton,
-                userRange === 'year' && styles.rangeButtonSelected,
+                userRange === "year" && styles.rangeButtonSelected,
               ]}
-              onPress={() => handleUserRangeChange('year')}
+              onPress={() => handleUserRangeChange("year")}
             >
               <Text
                 style={[
                   styles.rangeButtonText,
-                  userRange === 'year' && styles.rangeButtonTextSelected,
+                  userRange === "year" && styles.rangeButtonTextSelected,
                 ]}
               >
                 Year
@@ -706,9 +711,9 @@ const UserAnalytics = () => {
                 width={width - 32}
                 height={220}
                 chartConfig={{
-                  backgroundColor: '#ffffff',
-                  backgroundGradientFrom: '#ffffff',
-                  backgroundGradientTo: '#ffffff',
+                  backgroundColor: "#ffffff",
+                  backgroundGradientFrom: "#ffffff",
+                  backgroundGradientTo: "#ffffff",
                   decimalPlaces: 0,
                   color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                 }}
@@ -722,7 +727,7 @@ const UserAnalytics = () => {
             <View style={styles.legendContainer}>
               <View style={styles.legendItem}>
                 <View
-                  style={[styles.legendDot, { backgroundColor: '#7c3aed' }]}
+                  style={[styles.legendDot, { backgroundColor: "#7c3aed" }]}
                 />
                 <Text style={styles.legendText}>
                   Active Users ({userData.activeUsers})
@@ -730,7 +735,7 @@ const UserAnalytics = () => {
               </View>
               <View style={styles.legendItem}>
                 <View
-                  style={[styles.legendDot, { backgroundColor: '#c4b5fd' }]}
+                  style={[styles.legendDot, { backgroundColor: "#c4b5fd" }]}
                 />
                 <Text style={styles.legendText}>
                   Inactive Users ({userData.inactiveUsers})
@@ -741,13 +746,13 @@ const UserAnalytics = () => {
 
           <View style={styles.actionButtonsContainer}>
             <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#7c3aed' }]}
+              style={[styles.actionButton, { backgroundColor: "#7c3aed" }]}
               onPress={handleUserDownload}
             >
               <Text style={styles.actionButtonText}>Download</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#8b5cf6' }]}
+              style={[styles.actionButton, { backgroundColor: "#8b5cf6" }]}
               onPress={handleUserViewDetails}
             >
               <Text style={styles.actionButtonText}>View Details</Text>
@@ -818,31 +823,31 @@ const UserAnalytics = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
   },
   header: {
     padding: 16,
   },
   headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0f172a',
+    fontWeight: "bold",
+    color: "#0f172a",
   },
   fixedRefreshButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 16,
     right: 16,
     zIndex: 1000,
     marginRight: 20,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: "#f1f5f9",
     borderRadius: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -857,11 +862,11 @@ const styles = StyleSheet.create({
   },
   refreshIconSpinning: {
     opacity: 0.5,
-    transform: [{ rotate: '180deg' }],
+    transform: [{ rotate: "180deg" }],
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 24,
   },
   statCard: {
@@ -869,29 +874,29 @@ const styles = StyleSheet.create({
     margin: 6,
     padding: 16,
     borderRadius: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   statValue: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0f172a',
+    fontWeight: "bold",
+    color: "#0f172a",
     marginVertical: 8,
   },
   statLabel: {
     fontSize: 14,
-    color: '#0f172a',
+    color: "#0f172a",
   },
   usersContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 16,
   },
   userListContainer: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -899,19 +904,19 @@ const styles = StyleSheet.create({
   },
   userListTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#0f172a',
+    fontWeight: "600",
+    color: "#0f172a",
     marginBottom: 12,
   },
   userList: {
     maxHeight: 300,
   },
   userCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: "#e2e8f0",
   },
   userAvatar: {
     width: 40,
@@ -924,72 +929,72 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#0f172a',
+    fontWeight: "500",
+    color: "#0f172a",
   },
   userRole: {
     fontSize: 14,
-    color: '#64748b',
+    color: "#64748b",
   },
   userLastActive: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: "#94a3b8",
   },
   viewAllButton: {
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 12,
   },
   viewAllButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   fullListContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     zIndex: 1000,
     padding: 16,
   },
   fullListHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
   fullListTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0f172a',
+    fontWeight: "bold",
+    color: "#0f172a",
   },
   closeButton: {
     fontSize: 24,
-    color: '#64748b',
+    color: "#64748b",
     padding: 8,
   },
   searchContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: "#e2e8f0",
     marginBottom: 8,
   },
   searchInput: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: "#f1f5f9",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
     fontSize: 16,
-    color: '#0f172a',
+    color: "#0f172a",
   },
   noResultsText: {
-    textAlign: 'center',
-    color: '#64748b',
+    textAlign: "center",
+    color: "#64748b",
     fontSize: 16,
     marginTop: 24,
   },
@@ -997,14 +1002,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   chartCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 16,
     padding: 16,
     marginTop: 24,
     marginBottom: 24,
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -1016,8 +1021,8 @@ const styles = StyleSheet.create({
   },
   chartTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#0f172a',
+    fontWeight: "600",
+    color: "#0f172a",
     marginBottom: 16,
   },
   chart: {
@@ -1025,8 +1030,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   rangeContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
+    flexDirection: "row",
+    backgroundColor: "#f1f5f9",
     borderRadius: 8,
     padding: 4,
   },
@@ -1035,13 +1040,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   rangeButtonSelected: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
@@ -1053,46 +1058,46 @@ const styles = StyleSheet.create({
   },
   rangeButtonText: {
     fontSize: 14,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   rangeButtonTextSelected: {
-    color: '#0f172a',
-    fontWeight: '600',
+    color: "#0f172a",
+    fontWeight: "600",
   },
   dateRangeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   dateButton: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: "#f1f5f9",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   dateButtonText: {
     fontSize: 14,
-    color: '#0f172a',
-    fontWeight: '500',
+    color: "#0f172a",
+    fontWeight: "500",
   },
   dateRangeSeparator: {
     marginHorizontal: 12,
-    color: '#64748b',
+    color: "#64748b",
   },
   pieChartContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 16,
   },
   legendContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 16,
     gap: 24,
   },
   legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   legendDot: {
@@ -1102,12 +1107,12 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 14,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   actionButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 8,
     marginBottom: 24,
     paddingHorizontal: 8,
@@ -1117,53 +1122,53 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginHorizontal: 8,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   actionButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   detailsContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     zIndex: 1000,
   },
   detailsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: "#e2e8f0",
   },
   detailsTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#0f172a',
+    fontWeight: "bold",
+    color: "#0f172a",
   },
   dateRangeText: {
     fontSize: 16,
-    color: '#64748b',
+    color: "#64748b",
     marginTop: 4,
   },
   usersList: {
     padding: 16,
   },
   attendanceCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: "#e2e8f0",
   },
   userInfoSection: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 16,
   },
   userDetails: {
@@ -1171,7 +1176,7 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   statusBadge: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -1179,100 +1184,100 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   attendanceStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    borderTopColor: "#e2e8f0",
   },
   statItem: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   absentValue: {
-    color: '#dc2626',
+    color: "#dc2626",
   },
   fixedSearchContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 70,
     left: 0,
     right: 0,
     zIndex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: "#e2e8f0",
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   detailsSearchInput: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: "#f1f5f9",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
     fontSize: 16,
-    color: '#0f172a',
+    color: "#0f172a",
   },
   expenseCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    borderColor: "#e2e8f0",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   expenseInfo: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   expenseName: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#0f172a',
+    fontWeight: "500",
+    color: "#0f172a",
     flex: 1,
   },
   expenseDescription: {
     fontSize: 14,
-    color: '#64748b',
+    color: "#64748b",
     flex: 1,
     marginHorizontal: 12,
   },
   expenseAmount: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#059669',
+    fontWeight: "600",
+    color: "#059669",
   },
   expensesList: {
     padding: 16,
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   calendarContent: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   calendarModal: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 12,
     padding: 20,
     width: 380,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -1281,17 +1286,17 @@ const styles = StyleSheet.create({
   selectionInfo: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
     borderRadius: 8,
   },
   selectionText: {
     fontSize: 14,
-    color: '#64748b',
-    textAlign: 'center',
+    color: "#64748b",
+    textAlign: "center",
   },
   calendarButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 16,
   },
   calendarButton: {
@@ -1299,33 +1304,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
     minWidth: 100,
-    alignItems: 'center',
+    alignItems: "center",
   },
   clearButton: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: "#e2e8f0",
   },
   cancelButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: "#3b82f6",
   },
   calendarButtonText: {
     fontSize: 14,
   },
   customDateButton: {
-    backgroundColor: '#f1f5f9',
+    backgroundColor: "#f1f5f9",
     marginTop: 12,
     padding: 12,
     borderRadius: 8,
     marginBottom: 24,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: "#e2e8f0",
   },
   customDateButtonText: {
-    color: '#0f172a',
+    color: "#0f172a",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
 
