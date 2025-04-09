@@ -39,12 +39,7 @@ interface StatCardProps {
   color: string;
 }
 
-interface ActiveUser {
-  id: string;
-  name: string;
-  avatar: string;
-  status: string;
-}
+
 
 interface LocationType {
   coords: {
@@ -92,29 +87,7 @@ interface Quote {
   category: string;
 }
 
-const activeUsers: ActiveUser[] = [
-  {
-    id: '1',
-    name: 'Sarah Wilson',
-    avatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-    status: 'In office',
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    avatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-    status: 'Remote',
-  },
-  {
-    id: '3',
-    name: 'Emma Rodriguez',
-    avatar:
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80',
-    status: 'In meeting',
-  },
-];
+
 
 const NotificationDropdown = ({
   notifications,
@@ -170,15 +143,7 @@ const StatCard = ({ title, value, icon: Icon, color }: StatCardProps) => (
   </View>
 );
 
-const ActiveUserCard = ({ user }: { user: ActiveUser }) => (
-  <View style={styles.activeUserCard}>
-    <Image source={{ uri: user.avatar }} style={styles.activeUserAvatar} />
-    <View style={styles.activeUserInfo}>
-      <Text style={styles.activeUserName}>{user.name}</Text>
-      <Text style={styles.activeUserStatus}>{user.status}</Text>
-    </View>
-  </View>
-);
+
 
 const AttendanceDetails = ({
   attendance,
@@ -868,44 +833,8 @@ const styles = StyleSheet.create({
   locationDetails: {
     marginLeft: 28,
   },
-  activeUsersSection: {
-    backgroundColor: '#ffffff',
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  activeUserCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-  },
-  activeUserAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  activeUserInfo: {
-    marginLeft: 12,
-  },
-  activeUserName: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#111827',
-  },
-  activeUserStatus: {
-    fontSize: 14,
-    color: '#6b7280',
-  },
+ 
+
   moreButton: {
     marginTop: 16,
     padding: 12,
