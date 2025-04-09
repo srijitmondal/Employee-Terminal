@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Switch,
@@ -12,8 +12,8 @@ import {
   Modal,
   ScrollView,
   useWindowDimensions,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Search,
   ChevronLeft,
@@ -25,13 +25,13 @@ import {
   Plus,
   Upload,
   Check,
-} from 'lucide-react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
-import { router } from 'expo-router';
-import moment from 'moment';
-import DropDownPicker from 'react-native-dropdown-picker';
-import * as DocumentPicker from 'expo-document-picker';
-import * as ImagePicker from 'expo-image-picker';
+} from "lucide-react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { router } from "expo-router";
+import moment from "moment";
+import DropDownPicker from "react-native-dropdown-picker";
+import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 
 interface RoleData {
   role_id: number;
@@ -52,7 +52,7 @@ interface UserDetails {
   u_state: string;
   u_country: string;
   u_organization: string;
-  u_pro_img: string | null; 
+  u_pro_img: string | null;
   u_cv: string;
   u_created_at: string;
   role_name: string;
@@ -65,7 +65,7 @@ type FormData = {
   firstName: string;
   middleName: string;
   lastName: string;
-  gender: 'male' | 'female';
+  gender: "male" | "female";
   email: string;
   mobile: string;
   role_name: string;
@@ -103,7 +103,7 @@ export default function UsersScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -119,55 +119,60 @@ export default function UsersScreen() {
   const [profileImageLoading, setProfileImageLoading] = useState(false);
 
   const [formData, setFormData] = useState<FormData>({
-    userId: '',
-    firstName: '',
-    middleName: '',
-    lastName: '',
-    gender: 'male',
-    email: '',
-    mobile: '',
-    city: '',
-    role_name: '',
-    state: '',
-    country: '',
-    zipCode: '',
-    streetAddress: '',
-    organization: '',
-    password: '',
-    profileImage: '',
-    cv: '',
+    userId: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    gender: "male",
+    email: "",
+    mobile: "",
+    city: "",
+    role_name: "",
+    state: "",
+    country: "",
+    zipCode: "",
+    streetAddress: "",
+    organization: "",
+    password: "",
+    profileImage: "",
+    cv: "",
     active: false,
     isDeleted: false,
-    created_at: '',
-    updated_at: '',
+    created_at: "",
+    updated_at: "",
   });
 
   const [formRoleData, setFormRoleData] = useState<FormRoleData>({
     role_id: 0,
-    role_name: '',
+    role_name: "",
     role_parent: 0,
-    created_at: '',
-    updated_at: '',
+    created_at: "",
+    updated_at: "",
     role_active: false,
     role_is_del: false,
   });
   const fetchData = async () => {
     try {
       const baseUrl = Platform.select({
-        web: 'http://demo-expense.geomaticxevs.in/ET-api',
-        default: 'http://demo-expense.geomaticxevs.in/ET-api',
+        web: "http://demo-expense.geomaticxevs.in/ET-api",
+        default: "http://demo-expense.geomaticxevs.in/ET-api",
       });
 
-      const response = await fetch(`http://demo-expense.geomaticxevs.in/ET-api/user_roles.php`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Origin:
-            Platform.OS === 'web' ? window.location.origin : 'http://demo-expense.geomaticxevs.in/ET-api',
-        },
-        credentials: 'same-origin',
-      });
+      const response = await fetch(
+        `http://demo-expense.geomaticxevs.in/ET-api/user_roles.php`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Origin:
+              Platform.OS === "web"
+                ? window.location.origin
+                : "http://demo-expense.geomaticxevs.in/ET-api",
+          },
+          credentials: "same-origin",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -176,17 +181,17 @@ export default function UsersScreen() {
       const jsonData = await response.json();
 
       if (!Array.isArray(jsonData)) {
-        throw new Error('Data is not in the expected format');
+        throw new Error("Data is not in the expected format");
       }
 
       setData(jsonData);
       setError(null);
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
       if (err instanceof Error) {
         setError(`Error: ${err.message}`);
       } else {
-        setError('An unexpected error occurred');
+        setError("An unexpected error occurred");
       }
     } finally {
       setLoading(false);
@@ -218,11 +223,11 @@ export default function UsersScreen() {
   useEffect(() => {
     if (showAddUserRole) {
       // Only update when modal is shown
-      const currentTimestamp = moment().format('YYYY-MM-DD HH:mm:ss');
+      const currentTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
       setFormRoleData((prev) => ({ ...prev, created_at: currentTimestamp }));
     }
     if (showAddUser) {
-      const currentTimestamp = moment().format('YYYY-MM-DD HH:mm:ss');
+      const currentTimestamp = moment().format("YYYY-MM-DD HH:mm:ss");
       setFormData((prev) => ({ ...prev, created_at: currentTimestamp }));
     }
   }, [showAddUserRole || showAddUser]);
@@ -250,13 +255,13 @@ export default function UsersScreen() {
   const fetchData1 = async () => {
     try {
       // Use a fixed base URL
-      const baseUrl = 'http://demo-expense.geomaticxevs.in/ET-api';
+      const baseUrl = "http://demo-expense.geomaticxevs.in/ET-api";
 
       const response = await fetch(`${baseUrl}/user_details.php`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({}),
       });
@@ -268,14 +273,14 @@ export default function UsersScreen() {
       const jsonData = await response.json();
 
       if (!Array.isArray(jsonData)) {
-        throw new Error('Users data is not in the expected format');
+        throw new Error("Users data is not in the expected format");
       }
 
       const newusers: Record<string, UserDetails> = {};
-      const today = moment().format('YYYY-MM-DD'); // Get today's date in 'YYYY-MM-DD' format
+      const today = moment().format("YYYY-MM-DD"); // Get today's date in 'YYYY-MM-DD' format
 
       jsonData.forEach((user, index) => {
-        const loginDate = moment(user.most_recent_login).format('YYYY-MM-DD'); // Format most_recent_login to 'YYYY-MM-DD'
+        const loginDate = moment(user.most_recent_login).format("YYYY-MM-DD"); // Format most_recent_login to 'YYYY-MM-DD'
 
         newusers[String(index + 1)] = {
           u_id: user.u_id.toString(),
@@ -298,19 +303,19 @@ export default function UsersScreen() {
           // Set status based on is_logged_out and most_recent_login
           user_status:
             loginDate === today && user.is_logged_out === 1
-              ? 'ACTIVE'
-              : 'NOT ACTIVE',
+              ? "ACTIVE"
+              : "NOT ACTIVE",
         };
       });
 
       setMOCK_USERS(newusers);
       setError(null);
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
       setError(
         err instanceof Error
           ? `Error: ${err.message}`
-          : 'An unexpected error occurred'
+          : "An unexpected error occurred"
       );
     } finally {
       setLoading(false);
@@ -369,20 +374,23 @@ export default function UsersScreen() {
 
   const confirmDelete = async () => {
     if (!selectedUser) return;
-  
+
     try {
-      const response = await fetch(`http://demo-expense.geomaticxevs.in/ET-api/user_delete.php/${selectedUser}`, {
-        method: 'DELETE',
-      });
-  
+      const response = await fetch(
+        `http://demo-expense.geomaticxevs.in/ET-api/user_delete.php/${selectedUser}`,
+        {
+          method: "DELETE",
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to delete user');
+        throw new Error("Failed to delete user");
       }
-  
-      console.log('User deleted successfully');
+
+      console.log("User deleted successfully");
       // Optionally update the UI (e.g., refresh user list)
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error("Error deleting user:", error);
     } finally {
       fetchData();
       fetchData1();
@@ -390,7 +398,6 @@ export default function UsersScreen() {
       setSelectedUser(null);
     }
   };
-  
 
   const handleViewProfile = async (user: UserDetails) => {
     setProfileImageLoading(true);
@@ -399,7 +406,7 @@ export default function UsersScreen() {
         `http://demo-expense.geomaticxevs.in/ET-api/profile_image_handler.php?user_id=${user.u_id}`
       );
       if (!response.ok) {
-        throw new Error('Failed to fetch profile image');
+        throw new Error("Failed to fetch profile image");
       }
       const data = await response.json();
       if (data.u_pro_img && data.u_pro_img !== "") {
@@ -409,22 +416,21 @@ export default function UsersScreen() {
         setEditedUser({ ...user, u_pro_img: null });
       }
     } catch (error) {
-      console.error('Error fetching profile image:', error);
+      console.error("Error fetching profile image:", error);
       // Set to null in case of error
       setEditedUser({ ...user, u_pro_img: null });
-    }
-     finally {
+    } finally {
       setProfileImageLoading(false);
       setShowUserProfile(true);
     }
   };
 
-  const  handleSave = async(userId: string) => {
+  const handleSave = async (userId: string) => {
     // Here you would typically make an API call to update the user
-    console.log('Saving user:', editedUser);
+    console.log("Saving user:", editedUser);
     const baseUrl = Platform.select({
-      web: 'http://demo-expense.geomaticxevs.in/ET-api',
-      default: 'http://demo-expense.geomaticxevs.in/ET-api',
+      web: "http://demo-expense.geomaticxevs.in/ET-api",
+      default: "http://demo-expense.geomaticxevs.in/ET-api",
     });
     try {
       // Prepare the data to send
@@ -440,28 +446,28 @@ export default function UsersScreen() {
         country: editedUser?.u_country,
         organization: editedUser?.u_organization,
         profile_image: editedUser?.u_pro_img,
-        cv: editedUser?.u_cv
+        cv: editedUser?.u_cv,
       };
-      console.log('User Data to Send:', userData);
-  
+      console.log("User Data to Send:", userData);
+
       const response = await fetch(`${baseUrl}/user_save.php/${userId}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const result = await response.json();
-      console.log('Server Response:', result);
-  
+      console.log("Server Response:", result);
+
       if (result.success) {
-        alert('User updated successfully!');
+        alert("User updated successfully!");
         setShowAddUser(false);
         setSelectedRole(null);
         setItems([]);
@@ -470,10 +476,9 @@ export default function UsersScreen() {
         alert(`Error: ${result.message}`);
       }
     } catch (error) {
-      console.error('Error updating user:', error);
-      alert('Something went wrong while updating the user. Please try again!');
+      console.error("Error updating user:", error);
+      alert("Something went wrong while updating the user. Please try again!");
     }
-    
 
     resetForm();
     setIsEditing(false);
@@ -487,91 +492,94 @@ export default function UsersScreen() {
   };
   const handleSubmitUser = async () => {
     const baseUrl = Platform.select({
-      web: 'http://demo-expense.geomaticxevs.in/ET-api',
-      default: 'http://demo-expense.geomaticxevs.in/ET-api',
+      web: "http://demo-expense.geomaticxevs.in/ET-api",
+      default: "http://demo-expense.geomaticxevs.in/ET-api",
     });
     try {
       // Prepare the data to send
       const userData = {
-        user_id: formData.userId,
-        first_name: formData.firstName,
-        middle_name: formData.middleName,
+        user_id: formData.userId || "",
+        first_name: formData.firstName || "",
+        middle_name: formData.middleName || "",
         last_name: formData.lastName,
-        gender: formData.gender,
-        email: formData.email,
-        mobile: formData.mobile,
-        city: formData.city,
+        gender: formData.gender || "",
+        email: formData.email || "",
+        mobile: formData.mobile || "",
+        city: formData.city || "",
         state: formData.state,
-        country: formData.country,
-        zip_code: formData.zipCode,
+        country: formData.country || "",
+        zip_code: formData.zipCode || "",
         role_name: selectedRole,
-        street_address: formData.streetAddress,
-        organization: formData.organization,
-        password: formData.password,
-        profile_image: formData.profileImage,
-        cv: formData.cv,
+        street_address: formData.streetAddress || "",
+        organization: formData.organization || "",
+        password: formData.password || "",
+        profile_image: formData.profileImage || "",
+        cv: formData.cv || "",
         active: formData.active ? 1 : 0,
         is_deleted: formData.isDeleted ? 1 : 0,
-        created_at: formData.created_at,
-        updated_at: formData.updated_at
+        created_at: formData.created_at || "",
+        updated_at: formData.updated_at || "",
       };
-  
-      console.log('User Data to Send:', userData);  
+
+      console.log("User Data to Send:", userData);
       const response = await fetch(`${baseUrl}/user_form.php`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(userData),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+
       const result = await response.json();
-      console.log('Server Response:', result);
+      console.log("Server Response:", result);
       if (result.success) {
-        alert('User added successfully!');
+        alert("User added successfully!");
         setShowAddUser(false);
         setSelectedRole(null);
         setItems([]);
+        fetchData(); // Refresh role list
         fetchData1();
       } else {
         alert(`Error: ${result.message}`);
       }
     } catch (error) {
-      console.error('Error submitting user:', error);
-      alert('Something went wrong while adding the user. Please try again!');
+      console.error("Error submitting user:", error);
+      alert("Something went wrong while adding the user. Please try again!");
     }
-  
+
     resetForm();
   };
 
-  
   const handleSubmitUserRole = async () => {
     const roleDataToSend = {
       role_id: formRoleData.role_id,
       role_name: formRoleData.role_name,
       role_parent: formRoleData.role_parent, // This is now the ID (number)
-      created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+      created_at: moment().format("YYYY-MM-DD HH:mm:ss"),
       role_active: 1,
       role_is_del: 0,
     };
-    console.log('Submitting Role Data:', roleDataToSend);
+    console.log("Submitting Role Data:", roleDataToSend);
 
     const baseUrl = Platform.select({
-      web: 'http://demo-expense.geomaticxevs.in/ET-api',
-      default: 'http://demo-expense.geomaticxevs.in/ET-api',
+      web: "http://demo-expense.geomaticxevs.in/ET-api",
+      default: "http://demo-expense.geomaticxevs.in/ET-api",
     });
 
     try {
-      const response = await fetch(`http://demo-expense.geomaticxevs.in/ET-api/role_form.php`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(roleDataToSend),
-      });
+      const response = await fetch(
+        `http://demo-expense.geomaticxevs.in/ET-api/role_form.php`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(roleDataToSend),
+        }
+      );
 
       const result = await response.json();
       if (result.success) {
@@ -580,48 +588,48 @@ export default function UsersScreen() {
         setShowAddUserRole(false);
         setSelectedRole(null); // Reset selectedRole to null to show all roles
       } else {
-        alert('Error: ' + result.message);
+        alert("Error: " + result.message);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('Something went wrong!');
+      console.error("Error:", error);
+      alert("Something went wrong!");
     }
     resetFormRole();
   };
   const resetFormRole = () => {
     setFormRoleData({
       role_id: 0,
-      role_name: '',
+      role_name: "",
       role_parent: 0,
-      created_at: '',
-      updated_at: '',
+      created_at: "",
+      updated_at: "",
       role_active: false,
       role_is_del: false,
     });
   };
   const resetForm = () => {
     setFormData({
-      userId: '',
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      gender: 'male',
-      email: '',
-      mobile: '',
-      city: '',
-      state: '',
-      country: '',
-      zipCode: '',
-      role_name: '',
-      streetAddress: '',
-      organization: '',
-      password: '',
-      profileImage: '',
-      cv: '',
+      userId: "",
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      gender: "male",
+      email: "",
+      mobile: "",
+      city: "",
+      state: "",
+      country: "",
+      zipCode: "",
+      role_name: "",
+      streetAddress: "",
+      organization: "",
+      password: "",
+      profileImage: "",
+      cv: "",
       active: false,
       isDeleted: false,
-      created_at: '',
-      updated_at: '',
+      created_at: "",
+      updated_at: "",
     });
   };
 
@@ -646,7 +654,7 @@ export default function UsersScreen() {
         entering={FadeIn}
         style={[
           styles.row,
-          { backgroundColor: item.role_id % 2 === 0 ? '#f9fafb' : '#ffffff' },
+          { backgroundColor: item.role_id % 2 === 0 ? "#f9fafb" : "#ffffff" },
         ]}
       >
         <Text style={[styles.cell, { flex: isDesktop ? 0.5 : 0.3 }]}>
@@ -672,7 +680,7 @@ export default function UsersScreen() {
           styles.userRow,
           {
             backgroundColor:
-              users.indexOf(item) % 2 === 0 ? '#f9fafb' : '#ffffff',
+              users.indexOf(item) % 2 === 0 ? "#f9fafb" : "#ffffff",
           },
         ]}
       >
@@ -738,32 +746,37 @@ export default function UsersScreen() {
         aspect: [1, 1],
         quality: 1,
       });
-    
+
       if (!result.canceled) {
         const imageUri = result.assets[0].uri;
-        setEditedUser((prevUser) => ({
-          ...prevUser,
-          u_pro_img: imageUri,
-        }) as UserDetails);
+        setEditedUser(
+          (prevUser) =>
+            ({
+              ...prevUser,
+              u_pro_img: imageUri,
+            } as UserDetails)
+        );
       }
     };
     const handleCVUpload = async () => {
       try {
         const result = await DocumentPicker.getDocumentAsync({
-          type: 'application/pdf',
+          type: "application/pdf",
         });
 
         if (result.assets && result.assets.length > 0) {
-          setEditedUser((prev) => ({
-            ...prev,
-            cv: result.assets[0].uri || '', // Ensures a string is assigned
-          })as UserDetails);
+          setEditedUser(
+            (prev) =>
+              ({
+                ...prev,
+                cv: result.assets[0].uri || "", // Ensures a string is assigned
+              } as UserDetails)
+          );
         }
       } catch (error) {
-        console.error('Error picking document:', error);
+        console.error("Error picking document:", error);
       }
     };
-    
 
     return (
       <Modal visible={showUserProfile} animationType="slide">
@@ -783,7 +796,9 @@ export default function UsersScreen() {
             </Text>
             <TouchableOpacity
               style={styles.editButton}
-              onPress={() => (isEditing ? handleSave(editedUser.u_id) : setIsEditing(true))}
+              onPress={() =>
+                isEditing ? handleSave(editedUser.u_id) : setIsEditing(true)
+              }
             >
               {isEditing ? (
                 <Check size={20} color="#ffffff" />
@@ -791,7 +806,7 @@ export default function UsersScreen() {
                 <Edit2 size={20} color="#ffffff" />
               )}
               <Text style={styles.editButtonText}>
-                {isEditing ? 'Save' : 'Edit'}
+                {isEditing ? "Save" : "Edit"}
               </Text>
             </TouchableOpacity>
           </View>
@@ -800,7 +815,7 @@ export default function UsersScreen() {
             <View
               style={[
                 styles.content,
-                { flexDirection: isDesktop ? 'row' : 'column' },
+                { flexDirection: isDesktop ? "row" : "column" },
               ]}
             >
               {/* Left Column - Profile Image and Basic Info */}
@@ -815,12 +830,15 @@ export default function UsersScreen() {
                     source={{
                       uri:
                         editedUser.u_pro_img ||
-                        'https://via.placeholder.com/200',
+                        "https://via.placeholder.com/200",
                     }}
                     style={styles.profileImage}
                   />
                   {isEditing && (
-                    <TouchableOpacity style={styles.uploadButton} onPress={handleImagePick}>
+                    <TouchableOpacity
+                      style={styles.uploadButton}
+                      onPress={handleImagePick}
+                    >
                       <Upload size={20} color="#ffffff" />
                       <Text style={styles.uploadButtonText}>Update Photo</Text>
                     </TouchableOpacity>
@@ -841,7 +859,7 @@ export default function UsersScreen() {
                   <View
                     style={[
                       styles.statusBadge,
-                      editedUser.user_status === 'ACTIVE'
+                      editedUser.user_status === "ACTIVE"
                         ? styles.statusActive
                         : styles.statusInactive,
                     ]}
@@ -849,12 +867,11 @@ export default function UsersScreen() {
                     <Text
                       style={[
                         styles.statusText,
-                        editedUser.user_status === 'ACTIVE'
+                        editedUser.user_status === "ACTIVE"
                           ? styles.statusTextActive
                           : styles.statusTextInactive,
                       ]}
-                    >
-                    </Text>
+                    ></Text>
                   </View>
                 </View>
               </View>
@@ -1040,7 +1057,7 @@ export default function UsersScreen() {
                     {editedUser.u_cv ? (
                       <View style={styles.documentContainer}>
                         <Text style={styles.documentText} numberOfLines={1}>
-                          {editedUser.u_cv.split('/').pop()}
+                          {editedUser.u_cv.split("/").pop()}
                         </Text>
                         <TouchableOpacity style={styles.viewButton}>
                           <Text style={styles.viewButtonText}>View</Text>
@@ -1053,15 +1070,15 @@ export default function UsersScreen() {
                     )}
                     {isEditing && (
                       <TouchableOpacity
-                      style={styles.uploadDocumentButton}
-                      onPress={handleCVUpload}>
+                        style={styles.uploadDocumentButton}
+                        onPress={handleCVUpload}
+                      >
                         <Upload size={16} color="#6366f1" />
                         <Text style={styles.uploadDocumentText}>
-                          {editedUser.u_cv ? 'Update CV' : 'Upload CV'}
+                          {editedUser.u_cv ? "Update CV" : "Upload CV"}
                         </Text>
                       </TouchableOpacity>
                     )}
-                    
                   </View>
                 </View>
 
@@ -1074,13 +1091,13 @@ export default function UsersScreen() {
                     <Text style={styles.label}>Created At</Text>
                     <Text style={styles.value}>
                       {new Date(editedUser.u_created_at).toLocaleDateString(
-                        'en-US',
+                        "en-US",
                         {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         }
                       )}
                     </Text>
@@ -1113,10 +1130,7 @@ export default function UsersScreen() {
             <Text style={styles.title}>Add New Role</Text>
           </View>
 
-          <ScrollView
-            style={styles.formContainer}
-            showsVerticalScrollIndicator={false}
-          >
+          <View style={styles.formContainer}>
             <View style={styles.section}>
               {/* First Row */}
               <View style={styles.formRow}>
@@ -1157,7 +1171,7 @@ export default function UsersScreen() {
                   />
                 </View>
 
-                <View style={styles.formColumn}>
+                <View style={[styles.formColumn, { zIndex: 1000 }]}>
                   <Text style={styles.label}>Parent Role</Text>
                   <DropDownPicker
                     open={open}
@@ -1166,23 +1180,25 @@ export default function UsersScreen() {
                     setOpen={setOpen}
                     setValue={(callback) => {
                       const newValue =
-                        typeof callback === 'function'
+                        typeof callback === "function"
                           ? callback(formRoleData.role_parent?.toString())
                           : callback;
                       handleRoleChange(newValue);
                     }}
                     placeholder="Select Parent Role"
                     style={[styles.input, { minHeight: 40 }]}
-                    dropDownContainerStyle={styles.dropdownList}
+                    dropDownContainerStyle={[
+                      styles.dropdownList,
+                      { top: 40 }, // Position dropdown below the picker
+                    ]}
                     zIndex={3000}
+                    listMode="SCROLLVIEW"
                   />
                 </View>
               </View>
 
               {/* Buttons Row */}
-              <View
-                style={[styles.buttonContainer, { marginTop: open ? 160 : 20 }]}
-              >
+              <View style={[styles.buttonContainer, { marginTop: 20 }]}>
                 <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={() => {
@@ -1203,7 +1219,7 @@ export default function UsersScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          </ScrollView>
+          </View>
         </SafeAreaView>
       </Modal>
     );
@@ -1218,7 +1234,7 @@ export default function UsersScreen() {
         aspect: [1, 1],
         quality: 1,
       });
-    
+
       if (!result.canceled) {
         const imageUri1 = result.assets[0].uri;
         setImageUri(imageUri1);
@@ -1228,22 +1244,21 @@ export default function UsersScreen() {
         }));
       }
     };
-    
 
     const handleCVUpload = async () => {
       try {
         const result = await DocumentPicker.getDocumentAsync({
-          type: 'application/pdf',
+          type: "application/pdf",
         });
 
         if (result.assets && result.assets.length > 0) {
           setFormData((prev) => ({
             ...prev,
-            cv: result.assets[0].uri || '', // Ensures a string is assigned
+            cv: result.assets[0].uri || "", // Ensures a string is assigned
           }));
         }
       } catch (error) {
-        console.error('Error picking document:', error);
+        console.error("Error picking document:", error);
       }
     };
 
@@ -1270,24 +1285,21 @@ export default function UsersScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Profile Details</Text>
 
-
               <TouchableOpacity
-      style={styles.uploadContainer}
-      onPress={handleImagePick}
-    >
-      {imageUri && (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.previewImage}
-        />
-      )}
-      <View style={styles.uploadCircle}>
-        <Upload size={24} color="#6366f1" />
-      </View>
-      <Text style={styles.uploadText}>Upload Profile Image</Text>
-
-      
-    </TouchableOpacity>
+                style={styles.uploadContainer}
+                onPress={handleImagePick}
+              >
+                {imageUri && (
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.previewImage}
+                  />
+                )}
+                <View style={styles.uploadCircle}>
+                  <Upload size={24} color="#6366f1" />
+                </View>
+                <Text style={styles.uploadText}>Upload Profile Image</Text>
+              </TouchableOpacity>
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>User ID</Text>
                 <TextInput
@@ -1386,14 +1398,14 @@ export default function UsersScreen() {
                   <TouchableOpacity
                     style={[
                       styles.radioButton,
-                      formData.gender === 'male' && styles.radioButtonSelected,
+                      formData.gender === "male" && styles.radioButtonSelected,
                     ]}
-                    onPress={() => setFormData({ ...formData, gender: 'male' })}
+                    onPress={() => setFormData({ ...formData, gender: "male" })}
                   >
                     <View
                       style={[
                         styles.radio,
-                        formData.gender === 'male' && styles.radioSelected,
+                        formData.gender === "male" && styles.radioSelected,
                       ]}
                     />
                     <Text style={styles.radioLabel}>Male</Text>
@@ -1402,17 +1414,17 @@ export default function UsersScreen() {
                   <TouchableOpacity
                     style={[
                       styles.radioButton,
-                      formData.gender === 'female' &&
+                      formData.gender === "female" &&
                         styles.radioButtonSelected,
                     ]}
                     onPress={() =>
-                      setFormData({ ...formData, gender: 'female' })
+                      setFormData({ ...formData, gender: "female" })
                     }
                   >
                     <View
                       style={[
                         styles.radio,
-                        formData.gender === 'female' && styles.radioSelected,
+                        formData.gender === "female" && styles.radioSelected,
                       ]}
                     />
                     <Text style={styles.radioLabel}>Female</Text>
@@ -1447,11 +1459,11 @@ export default function UsersScreen() {
               </View>
               <Text style={styles.label}>Role</Text>
               <TextInput
-                value={selectedRole || ''}
+                value={selectedRole || ""}
                 editable={false} // Makes it read-only
                 style={[
                   styles.input,
-                  { minHeight: 40, backgroundColor: '#f0f0f0' },
+                  { minHeight: 40, backgroundColor: "#f0f0f0" },
                 ]}
               />
 
@@ -1620,8 +1632,8 @@ export default function UsersScreen() {
 
           <View style={styles.pagination}>
             <Text style={styles.paginationText}>
-              Showing {startIndex1 + 1} to{' '}
-              {Math.min(startIndex1 + ITEMS_PER_PAGE, users.length)} of{' '}
+              Showing {startIndex1 + 1} to{" "}
+              {Math.min(startIndex1 + ITEMS_PER_PAGE, users.length)} of{" "}
               {users.length} entries
             </Text>
             <View style={styles.paginationControls}>
@@ -1635,7 +1647,7 @@ export default function UsersScreen() {
               >
                 <ChevronLeft
                   size={20}
-                  color={currentPage === 1 ? '#9ca3af' : '#6366f1'}
+                  color={currentPage === 1 ? "#9ca3af" : "#6366f1"}
                 />
               </TouchableOpacity>
               <View style={styles.pageNumbers}>
@@ -1656,7 +1668,7 @@ export default function UsersScreen() {
               >
                 <ChevronRight
                   size={20}
-                  color={currentPage === totalPages1 ? '#9ca3af' : '#6366f1'}
+                  color={currentPage === totalPages1 ? "#9ca3af" : "#6366f1"}
                 />
               </TouchableOpacity>
             </View>
@@ -1712,8 +1724,8 @@ export default function UsersScreen() {
 
           <View style={styles.pagination}>
             <Text style={styles.paginationText}>
-              Showing {startIndex + 1} to{' '}
-              {Math.min(startIndex + ITEMS_PER_PAGE, filteredRoles.length)} of{' '}
+              Showing {startIndex + 1} to{" "}
+              {Math.min(startIndex + ITEMS_PER_PAGE, filteredRoles.length)} of{" "}
               {filteredRoles.length} entries
             </Text>
             <View style={styles.paginationControls}>
@@ -1727,7 +1739,7 @@ export default function UsersScreen() {
               >
                 <ChevronLeft
                   size={20}
-                  color={currentPage === 1 ? '#9ca3af' : '#6366f1'}
+                  color={currentPage === 1 ? "#9ca3af" : "#6366f1"}
                 />
               </TouchableOpacity>
               <View style={styles.pageNumbers}>
@@ -1748,7 +1760,7 @@ export default function UsersScreen() {
               >
                 <ChevronRight
                   size={20}
-                  color={currentPage === totalPages ? '#9ca3af' : '#6366f1'}
+                  color={currentPage === totalPages ? "#9ca3af" : "#6366f1"}
                 />
               </TouchableOpacity>
             </View>
@@ -1793,57 +1805,58 @@ export default function UsersScreen() {
 
 const styles = StyleSheet.create({
   toggleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#f4f4f5',
+    backgroundColor: "#f4f4f5",
     borderRadius: 8,
     marginVertical: 8,
   },
 
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#cccccc",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#ffffff",
+    zIndex: 1, // Add this
   },
   dropdown: {
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   dropdownContainer: {
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    position: 'absolute', // Ensure dropdown is positioned absolutely
-    width: '100%', // Match the width of the input
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
+    position: "absolute", // Ensure dropdown is positioned absolutely
+    width: "100%", // Match the width of the input
     top: 40, // Position below the input
     zIndex: 1000, // High z-index to appear above other elements
     elevation: 1000, // For Android
   },
   button: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: "#6C63FF",
     paddingVertical: 12,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   userImage: {
     width: 50,
@@ -1856,19 +1869,19 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   userEmail: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
   },
   userRole: {
     fontSize: 12,
-    color: '#888',
+    color: "#888",
     marginTop: 4,
   },
   imageContainer: {
-    position: 'relative',
+    position: "relative",
     marginBottom: 24,
   },
   profileImage: {
@@ -1876,59 +1889,59 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 100,
     borderWidth: 4,
-    borderColor: '#ffffff',
-    shadowColor: '#000000',
+    borderColor: "#ffffff",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   uploadButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     padding: 12,
     borderRadius: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000000',
+    flexDirection: "row",
+    alignItems: "center",
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   desktopDetailsSection: {},
   uploadButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   idFields: {
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
-    width: '100%',
+    width: "100%",
   },
   idValue: {
     fontSize: 16,
-    color: '#6366f1',
-    fontWeight: '500',
+    color: "#6366f1",
+    fontWeight: "500",
     marginBottom: 12,
   },
   sectionGroup: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     padding: 24,
     borderRadius: 12,
     marginBottom: 24,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 20,
   },
   previewImage: {
@@ -1938,9 +1951,9 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   documentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9fafb',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9fafb",
     padding: 12,
     borderRadius: 8,
     marginTop: 8,
@@ -1948,36 +1961,36 @@ const styles = StyleSheet.create({
   documentText: {
     flex: 1,
     fontSize: 14,
-    color: '#374151',
+    color: "#374151",
   },
   viewButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: "#6366f1",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 6,
     marginLeft: 12,
   },
   viewButtonText: {
-    color: '#ffffff',
-    fontWeight: '500',
+    color: "#ffffff",
+    fontWeight: "500",
   },
   desktopdetailsSection: {},
   noDocument: {
-    color: '#6b7280',
-    fontStyle: 'italic',
+    color: "#6b7280",
+    fontStyle: "italic",
     marginTop: 8,
   },
   uploadDocumentButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f3f4f6',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f3f4f6",
     padding: 12,
     borderRadius: 8,
     marginTop: 12,
   },
   uploadDocumentText: {
-    color: '#6366f1',
-    fontWeight: '500',
+    color: "#6366f1",
+    fontWeight: "500",
     marginLeft: 8,
   },
   content: {
@@ -1985,11 +1998,11 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   profileSection: {
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
+    alignItems: "center",
+    backgroundColor: "#ffffff",
     padding: 24,
     borderRadius: 12,
-    shadowColor: '#000000',
+    shadowColor: "#000000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -1997,14 +2010,14 @@ const styles = StyleSheet.create({
   desktopProfileSection: {
     flex: 1,
     marginRight: 24,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   detailsSection: {
     flex: 2,
   },
   value: {
     fontSize: 16,
-    color: '#111827',
+    color: "#111827",
     marginTop: 4,
   },
   detailGroup: {
@@ -2014,82 +2027,82 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#6366f1',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#6366f1",
     padding: 12,
     borderRadius: 8,
   },
   editButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     marginLeft: 8,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   basicInfo: {
-    width: '100%',
+    width: "100%",
   },
   statusBadge: {
     width: 12, // Increase if needed (e.g., 14 or 16)
     height: 12,
     borderRadius: 6, // Perfect circle
     marginRight: 8, // Space around it
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
   },
 
   statusActive: {
-    backgroundColor: '#10b981', // Green for Active
+    backgroundColor: "#10b981", // Green for Active
     borderWidth: 1.5,
-    borderColor: '#047857', // Darker Green Border
+    borderColor: "#047857", // Darker Green Border
   },
 
   statusInactive: {
-    backgroundColor: '#ef4444', // Red for Inactive
+    backgroundColor: "#ef4444", // Red for Inactive
     borderWidth: 1.5,
-    borderColor: '#991b1b', // Darker Red Border
+    borderColor: "#991b1b", // Darker Red Border
   },
   statusText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   statusTextActive: {
-    color: '#166534',
+    color: "#166534",
   },
   statusTextInactive: {
-    color: '#991b1b',
+    color: "#991b1b",
   },
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   userRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   title: {
     flex: 1,
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 20,
-    color: '#111827',
+    color: "#111827",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f9fafb',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9fafb",
     borderRadius: 8,
     paddingHorizontal: 12,
     margin: 16,
@@ -2097,53 +2110,53 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 40,
-    color: '#374151',
+    color: "#374151",
     ...Platform.select({
       web: {
-        outlineStyle: 'none',
+        outlineStyle: "none",
       },
     }),
   },
   tableHeader: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
-    backgroundColor: '#f9fafb',
+    borderBottomColor: "#e5e7eb",
+    backgroundColor: "#f9fafb",
   },
   headerCell: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    textTransform: 'uppercase',
+    fontWeight: "600",
+    color: "#374151",
+    textTransform: "uppercase",
     paddingHorizontal: 8,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: "#e5e7eb",
   },
   cell: {
     paddingHorizontal: 8,
-    color: '#374151',
+    color: "#374151",
   },
   roleCell: {
     flex: 2,
   },
   roleText: {
-    color: '#6366f1',
-    fontWeight: '500',
+    color: "#6366f1",
+    fontWeight: "500",
   },
   countText: {
-    textAlign: 'left',
+    textAlign: "left",
   },
   userInfoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   avatar: {
     width: 40,
@@ -2153,152 +2166,152 @@ const styles = StyleSheet.create({
   },
   userId: {
     fontSize: 12,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   email: {
     fontSize: 14,
-    color: '#374151',
+    color: "#374151",
   },
   mobile: {
     fontSize: 14,
-    color: '#374151',
+    color: "#374151",
   },
   statusContainer: {
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
     width: 120,
     gap: 8,
   },
   actionsHeader: {
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
   },
   actionButton: {
     padding: 8,
     borderRadius: 6,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   deleteButton: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: "#fef2f2",
   },
   addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#6366f1',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#6366f1",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
     marginLeft: 16,
   },
   addButtonText: {
-    color: '#ffffff',
-    fontWeight: '500',
+    color: "#ffffff",
+    fontWeight: "500",
     marginLeft: 8,
   },
   pagination: {
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
+    borderTopColor: "#e5e7eb",
   },
   paginationText: {
-    color: '#6b7280',
+    color: "#6b7280",
     fontSize: 14,
     marginBottom: 12,
   },
   paginationControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   pageButton: {
     padding: 8,
     borderRadius: 6,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   pageButtonDisabled: {
     opacity: 0.5,
   },
   pageNumbers: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginHorizontal: 12,
   },
   pageNumber: {
-    color: '#374151',
+    color: "#374151",
     fontSize: 14,
     marginHorizontal: 4,
   },
   currentPage: {
-    color: '#6366f1',
-    fontWeight: '600',
+    color: "#6366f1",
+    fontWeight: "600",
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   confirmModal: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 12,
     padding: 24,
-    width: '90%',
+    width: "90%",
     maxWidth: 400,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 8,
   },
   modalText: {
     fontSize: 16,
-    color: '#6b7280',
+    color: "#6b7280",
     marginBottom: 24,
   },
   modalActions: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
   },
   modalButton: {
     flex: 1,
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalCancelButton: {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: "#f3f4f6",
   },
   modalDeleteButton: {
-    backgroundColor: '#ef4444',
+    backgroundColor: "#ef4444",
   },
   modalButtonText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#374151',
+    fontWeight: "500",
+    color: "#374151",
   },
   modalDeleteText: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   name: {
     fontSize: 24,
-    fontWeight: '600',
-    color: '#111827',
+    fontWeight: "600",
+    color: "#111827",
     marginBottom: 4,
   },
   nameInput: {
     fontSize: 24,
-    fontWeight: '600',
-    color: '#111827',
-    textAlign: 'center',
+    fontWeight: "600",
+    color: "#111827",
+    textAlign: "center",
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: "#e5e7eb",
     borderRadius: 6,
     padding: 8,
     marginBottom: 4,
@@ -2309,16 +2322,17 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#ffffff",
   },
   section: {
     marginBottom: 24,
   },
   uploadContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 24,
     borderWidth: 2,
-    borderColor: '#e5e7eb',
-    borderStyle: 'dashed',
+    borderColor: "#e5e7eb",
+    borderStyle: "dashed",
     borderRadius: 8,
     marginBottom: 24,
   },
@@ -2326,58 +2340,58 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#f3f4f6',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#f3f4f6",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 12,
   },
   uploadText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#6366f1',
+    fontWeight: "500",
+    color: "#6366f1",
     marginBottom: 4,
   },
   uploadHint: {
     fontSize: 14,
-    color: '#6b7280',
+    color: "#6b7280",
   },
   inputGroup: {
     marginBottom: 16,
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
   radioGroup: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 16,
   },
   radioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   radioButtonSelected: {
-    borderColor: '#6366f1',
+    borderColor: "#6366f1",
   },
   radio: {
     width: 20,
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#d1d5db',
+    borderColor: "#d1d5db",
     marginRight: 8,
     padding: 2,
   },
   radioSelected: {
-    borderColor: '#6366f1',
-    backgroundColor: '#6366f1',
+    borderColor: "#6366f1",
+    backgroundColor: "#6366f1",
   },
   radioLabel: {
     fontSize: 16,
-    color: '#374151',
+    color: "#374151",
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
     marginBottom: 20,
     zIndex: 1,
@@ -2386,43 +2400,44 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#f3f4f6',
-    alignItems: 'center',
+    backgroundColor: "#f3f4f6",
+    alignItems: "center",
   },
   cancelButtonText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#374151',
+    fontWeight: "500",
+    color: "#374151",
   },
   submitButton: {
     flex: 1,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#6366f1',
-    alignItems: 'center',
+    backgroundColor: "#6366f1",
+    alignItems: "center",
   },
   submitButtonText: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#ffffff',
+    fontWeight: "500",
+    color: "#ffffff",
   },
   formRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 20,
     gap: 16,
   },
 
   formColumn: {
     flex: 1,
+    position: "relative", // Add this
   },
 
   dropdownList: {
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
+    backgroundColor: "#ffffff",
+    borderColor: "#cccccc",
     borderWidth: 1,
-    position: 'absolute',
-    top: 0,
+    position: "absolute",
+    width: "100%",
     zIndex: 3000,
   },
 });
