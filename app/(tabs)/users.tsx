@@ -213,7 +213,7 @@ export default function UsersScreen() {
 
   useEffect(() => {
     fetchData();
-  }, [data]);
+  }, []);
 
   useEffect(() => {
     if (showAddUserRole) {
