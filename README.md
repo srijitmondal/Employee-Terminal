@@ -3,7 +3,7 @@
 
 
 ## 🚀 Overview
-**Geomaticx ET** is a complete employee management system. It runs in the background, collecting real-time location updates and displaying traveled routes on an interactive map.
+**Geomaticx ET** is a complete employee management system. It runs in the background, collecting real-time location updates and displaying traveled routes on an interactive mobile application.
 
 ## ✨ Features
 ✅ **Background Location Tracking** – Seamlessly collects location data in real-time.  
