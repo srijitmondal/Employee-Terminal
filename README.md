@@ -1,9 +1,9 @@
-# Geomaticx ET Application
+# Employee-Terminal Application
 
 
 
 ## 🚀 Overview
-**Geomaticx ET** is a complete employee management system. It runs in the background, collecting real-time location updates and displaying traveled routes on an interactive mobile application.
+**Employee-Terminal** is a complete employee management system. It runs in the background, collecting real-time location updates and displaying traveled routes on an interactive mobile application.
 
 ## ✨ Features
 ✅ **Background Location Tracking** – Seamlessly collects location data in real-time.  
@@ -41,6 +41,3 @@ Once the setup is complete, launch the application using Expo. Use the Start/End
 
 ## 📝 License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-🎯 **Geomaticx Software Solution** – Making geospatial tracking seamless and efficient!
